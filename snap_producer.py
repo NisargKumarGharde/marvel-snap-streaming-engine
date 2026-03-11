@@ -2,7 +2,7 @@ import json
 import time
 import random
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from kafka import KafkaProducer
 
 # Mock Data Dictionaries
@@ -18,7 +18,7 @@ def generate_marvel_snap_event(match_id, player_1_id, player_2_id, turn):
     event = {
         "event_id": str(uuid.uuid4()),
         "match_id": match_id,
-        "timestamp": datetime.utcnow().isoformat(),
+        "timestamp": datetime.now(timezone.utc).isoformat(),
         "turn": turn,
         "event_type": event_type,
         "event_data": {}
@@ -56,6 +56,7 @@ def stream_events():
     # Initialize the Kafka Producer
     producer = KafkaProducer(
         bootstrap_servers=['localhost:9092'],
+        api_version=(3, 0, 0),
         value_serializer=lambda v: json.dumps(v).encode('utf-8')
     )
     

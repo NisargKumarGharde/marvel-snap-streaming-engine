@@ -1,13 +1,13 @@
 import json
 from kafka import KafkaConsumer
-from datetime import datetime
+from datetime import datetime, timezone
 from cassandra.cluster import Cluster
 from cassandra.query import SimpleStatement
 
 def start_consumer():
     print("Connecting to Cassandra Database...")
     # Connect to the Cassandra container running in Codespaces
-    cluster = Cluster(['localhost'], port=9042)
+    cluster = Cluster(['127.0.0.1'], port=9042)
     session = cluster.connect('snap_analytics')
 
     # Prepare the SQL-like insert statement
@@ -23,6 +23,7 @@ def start_consumer():
     consumer = KafkaConsumer(
         'marvel-snap-events',
         bootstrap_servers=['localhost:9092'],
+        api_version=(3, 0, 0),
         auto_offset_reset='earliest', # Start reading from the oldest unread message
         group_id='cassandra-writer-group',
         value_deserializer=lambda x: json.loads(x.decode('utf-8'))

@@ -4,7 +4,7 @@ from cassandra.cluster import Cluster
 
 def run_analytics():
     print("Connecting to Cassandra to fetch live telemetry...")
-    cluster = Cluster(['localhost'], port=9042)
+    cluster = Cluster(['127.0.0.1'], port=9042)
     session = cluster.connect('snap_analytics')
 
     # Pull the massive dataset into memory
